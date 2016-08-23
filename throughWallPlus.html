@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>throughWallPlus</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        div {
+            float: left;
+            width: 180px;
+            height: 180px;
+            line-height: 180px;
+            font-size: 25px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            margin: 50px 10px;
+            background-position: center;
+            background-repeat: no-repeat;
+            box-shadow: 0 0 5px #ccc;
+        }
+
+        div.bg1 {
+            background-image: url("logo/1.jpg");
+        }
+
+        div.bg2 {
+            background-image: url("logo/2.jpg");
+        }
+
+        div.bg3 {
+            background-image: url("logo/3.jpg");
+        }
+
+        div.bg4 {
+            background-image: url("logo/4.jpg");
+        }
+
+        div span {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: -180px;
+            top: 0;
+            color: #fff;
+            opacity: 0.5;
+            filter: alpha(opacity=50);
+            background: darkgreen;
+        }
+    </style>
+</head>
+<body>
+<div class="bg1"><span>CompanyIntro1</span></div>
+<div class="bg2"><span>CompanyIntro2</span></div>
+<div class="bg3"><span>CompanyIntro3</span></div>
+<div class="bg4"><span>CompanyIntro4</span></div>
+<script src="js/utils.js" type="text/javascript"></script>
+<script src="js/move.js" type="text/javascript"></script>
+<script type="text/javascript">
+    var aDiv = document.getElementsByTagName('div');
+    for (var i = 0; i < aDiv.length; i++) {
+        move({
+            ele: aDiv[i]
+        });
+    }
+    function hoverDir(obj, e) {
+        var r = obj.offsetWidth / 2;
+        var x = obj.offsetLeft + r - e.clientX;
+        var y = obj.offsetTop + r - e.clientY;
+        return Math.round((Math.atan2(y, x) * 180 / Math.PI + 180) / 90) % 4;
+    }
+
+    function move(opt) {
+        var oDiv = opt.ele;
+        var effect = opt.effect || 0;
+        var time = opt.time || 300;
+        var oSpan = oDiv.getElementsByTagName('span')[0];
+
+        oDiv.onmouseover = function (e) {
+            e = e || window.event;
+            var oTo = e.fromElement || relatedTarget;
+            if (this.contains(oTo)) return;
+            var n = hoverDir(this, e);
+            switch (n) {
+                case 0:
+                    utils.css(oSpan, {left: 180, top: 0});
+                    break;
+                case 1:
+                    utils.css(oSpan, {left: 0, top: 180});
+                    break;
+                case 2:
+                    utils.css(oSpan, {left: -180, top: 0});
+                    break;
+                default:
+                    utils.css(oSpan, {left: 0, top: -180});
+            }
+            animate(oSpan, {left: 0, top: 0}, time, effect);
+        };
+        oDiv.onmouseout = function (e) {
+            e = e || window.event;
+            var oTo = e.toElement || relatedTarget;
+            if (this.contains(oTo)) return;
+            var n = hoverDir(this, e);
+            switch (n) {
+                case 0:
+                    animate(oSpan, {left: 180, top: 0}, time, effect);
+                    break;
+                case 1:
+                    animate(oSpan, {left: 0, top: 180}, time, effect);
+                    break;
+                case 2:
+                    animate(oSpan, {left: -180, top: 0}, time, effect);
+                    break;
+                default:
+                    animate(oSpan, {left: 0, top: -180}, time, effect);
+                    break;
+            }
+        }
+    }
+</script>
+</body>
+</html>
